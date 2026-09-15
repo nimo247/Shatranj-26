@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model GameConfig {
+  id        Int      @id @default(1)
+  state     String   @default("NOT_STARTED")
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id             String   @id @default(uuid())
+  teamId         String   @unique
+  teamName       String
+  password       String
+  region         String?
+  role           String   @default("TEAM")
+  food           Int      @default(0)
+  escrowFood     Int      @default(0)
+  material       Int      @default(0)
+  escrowMaterial Int      @default(0)
+  gold           Int      @default(0)
+  escrowGold     Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  cards          Card[]
+  mails          Mail[]
+  targetedOrders Order[]  @relation("Target")
+  orders         Order[]  @relation("Creator")
+}
+
+model Order {
+  id           Int      @id @default(autoincrement())
+  creatorId    String
+  targetTeamId String?
+  resourceType String
+  orderType    String
+  amount       Int
+  price        Float
+  status       String   @default("OPEN")
+  isAdminOrder Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  target       Team?    @relation("Target", fields: [targetTeamId], references: [id])
+  creator      Team     @relation("Creator", fields: [creatorId], references: [id])
+}
+
+model Mail {
+  id        Int      @id @default(autoincrement())
+  teamId    String
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  team      Team     @relation(fields: [teamId], references: [id])
+}
+
+model Card {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  description         String
+  type                String
+  isElite             Boolean   @default(false)
+  buildCostFood       Int       @default(0)
+  buildCostMaterial   Int       @default(0)
+  buildCostGold       Int       @default(0)
+  sustainCostFood     Int       @default(0)
+  sustainCostMaterial Int       @default(0)
+  sustainCostGold     Int       @default(0)
+  returnFood          Int       @default(0)
+  returnMaterial      Int       @default(0)
+  returnGold          Int       @default(0)
+  nav                 Int       @default(0)
+  teamId              String?
+  isBuilt             Boolean   @default(false)
+  isActive            Boolean   @default(false)
+  isDisabled          Boolean   @default(false)
+  assignedAt          DateTime?
+  updatedAt           DateTime  @updatedAt
+  team                Team?     @relation(fields: [teamId], references: [id])
+}
+
+model RoundSnapshot {
+  id        Int      @id @default(autoincrement())
+  roundNum  Int      @unique
+  createdAt DateTime @default(now())
+  data      String
+}
+
+model DisasterLog {
+  id            Int      @id @default(autoincrement())
+  timestamp     DateTime @default(now())
+  roundNum      Int
+  disasterName  String
+  description   String
+  impactedTeams String
+  isRegional    Boolean
+}
+
+model ActiveDebuff {
+  id              Int      @id @default(autoincrement())
+  disasterName    String
+  description     String
+  isRegional      Boolean
+  regions         String
+  roundApplied    Int
+  createdAt       DateTime @default(now())
+  cardTarget      String   @default("ACTIVE")
+  maxCap          Float
+  foodSustain     Float    @default(0)
+  foodReturn      Float    @default(0)
+  materialSustain Float    @default(0)
+  materialReturn  Float    @default(0)
+  goldSustain     Float    @default(0)
+  goldReturn      Float    @default(0)
+}
+
+model CustomDisaster {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  data      String
+  createdAt DateTime @default(now())
+}

@@ -45,6 +45,8 @@ To run Shatranj locally on your machine for development or testing:
    * Participant Login: `http://localhost:3000/`
    * Admin Dashboard: `http://localhost:3000/admin` (Requires `.env` setup with `ADMIN_KEYWORD`).
 
+Before setup, copy `.env.example` to `.env` and replace the example `JWT_SECRET` and `ADMIN_KEYWORD` values with your own private values. Never commit `.env`.
+
 ---
 
 ## Event Day: Offline Execution Guide

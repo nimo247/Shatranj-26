@@ -1,0 +1,12 @@
+node_modules
+.env
+*.db
+*.db-wal
+*.db-shm
+server/src/saves/*.json
+server/dist/saves/*.json
+server/dist/src/saves/*.json
+
+client/node_modules
+server/node_modules
+.agents
