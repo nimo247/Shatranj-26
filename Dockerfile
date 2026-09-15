@@ -2,6 +2,11 @@ FROM node:20-bookworm-slim
 
 WORKDIR /app
 
+# Prisma's native query/schema engines require OpenSSL at build and runtime.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY client/package.json client/package-lock.json ./client/
 RUN npm ci --prefix client
 
