@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: shatranj-26
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./data/shatranj.db?connection_limit=1
+      - key: SAVES_DIR
+        value: /app/server/prisma/data/saves
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_KEYWORD
+        sync: false
